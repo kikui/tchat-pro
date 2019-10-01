@@ -1,0 +1,258 @@
+body{
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    font-family: 'Oswald', sans-serif;
+}
+
+p{
+    margin: 0 0 16px 0;
+}
+
+#user {
+    float: left;
+    height: 100vh;
+    width: 20vw;
+    border-right: 1px solid black;
+    overflow: auto;
+    background: gainsboro;
+    background-image: url("/images/image3.png");
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#useritem{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.usercard{
+    height: 50px;
+    width: 100%;
+    background: rgb(255, 255, 255, 0.9);
+    text-align: center;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    padding-top: 14px;
+    border-bottom: red 4px solid;
+}
+
+.usercard:hover{
+    cursor: pointer;
+}
+
+.right-screen{
+    margin-left: 20vw;
+    width: 80vw;
+    height: 100vh;
+}
+
+#messages{
+    padding: 50px 20px 10px 20px;
+    height: 90vh;
+    background-image: url("/images/image2.jpg");
+    background-position: center;
+    background-size: cover;
+    overflow: auto;
+}
+
+#band{
+    position: absolute;
+    top: 10px;
+    right: 40%;
+    background: rgb(220, 220, 220, 0.8);
+    height: 30px;
+    text-align: center;
+    width: 10vW;
+    margin: auto;
+    border-radius: 10px;
+}
+
+.message-left{
+    float: left;
+    max-width: 80%;
+    min-width: 80%;
+    border-radius: 20px;
+    background: rgb(255, 255, 255, 0.6);
+    margin-bottom: 5px;
+    padding: 5px;
+    word-wrap: break-word;
+}
+
+.info-left{
+    float: left;
+    width: 100%;
+}
+
+.message-right{
+    float: right;
+    max-width: 80%;
+    min-width: 80%;
+    border-radius: 20px;
+    background: rgb(255, 255, 255, 0.6);
+    margin-bottom: 5px;
+    padding: 5px;
+    word-wrap: break-word;
+}
+
+.info-right{
+    float: right;
+    text-align: end;
+    width: 100%;
+}
+
+.date{
+    font-size: 12px;
+}
+
+.msg{
+    font-size: 20px;
+    font-weight: 400;
+}
+
+#form {
+    background: gainsboro;
+    height: 10vh;
+    text-align: center;
+    z-index: 1;
+}
+
+.margin-form{
+    height: 15%;
+}
+
+.send-message {
+    height: 70%;
+    width: 95%;
+    margin: auto;
+    border-radius: 10px;
+    background: whitesmoke;
+    box-shadow: -1px 1px 2px 0px rgba(0,0,0,0.3);
+}
+
+#messageinput{
+    background: transparent;
+    height: 100%;
+    width: 80%;
+    border: 0;
+    height: 100%;
+    font-weight: 500;
+    color: #223254;
+    border-radius: 10px; 
+    word-wrap: break-word;
+}
+
+#messageinput:focus{
+    outline: none;
+}
+
+#messagesubmit {
+    height: 80%;
+    min-width: 11%;
+	background-color:#ffffff;
+	-moz-border-radius:22px;
+	-webkit-border-radius:22px;
+	border-radius:22px;
+	border:1px solid #000000;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family:Arial;
+	font-weight:bold;
+	padding:6px 27px;
+	text-decoration:none;
+	text-shadow:0px 0px 1px #ffffff;
+}
+
+#login{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    opacity:0.4;
+    z-index: 1000;
+}
+
+#loginform{
+    position: absolute;
+    top: 40vh;
+    right: 30vw;
+    text-align: center;
+    padding: 30px;
+    background: white;
+    border-radius: 20px;
+    z-index: 1001;
+}
+
+#logininput{
+    -webkit-appearance: none;
+    width: 60%;
+    border: 0;
+    height: 48px;
+    font-weight: 500;
+    border-bottom: 2px solid #C8CCD4;
+    color: #223254;
+}
+
+#logininput:focus{
+    outline: none;
+}
+
+#logininput:hover{
+    background: rgba(#223254,.03)
+}
+
+#loginsubmit {
+	background-color:#ffffff;
+	-moz-border-radius:22px;
+	-webkit-border-radius:22px;
+	border-radius:22px;
+	border:1px solid #000000;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family:Arial;
+	font-weight:bold;
+	padding:6px 27px;
+	text-decoration:none;
+	text-shadow:0px 0px 1px #ffffff;
+}
+
+#loginsubmit:hover {
+	background-color:#e8e8e8;
+}
+
+#loginsubmit:active {
+	position:relative;
+	top:1px;
+}
+
+#badlogin{
+    display: none;
+    color: red;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: white;
+}
+
+  /* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+  /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
