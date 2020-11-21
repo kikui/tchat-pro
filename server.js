@@ -1,93 +1,127 @@
 var express = require('express'),
-app = express(),
-server = require('http').createServer(app),
-io = require('socket.io').listen(server),
-ChannelsModel = require('./public/js/models.js');
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server),
+    moment = require('moment'),
+    UsersModel = require('./public/js/app/Models/User'),
+    ChannelsModel = require('./public/js/app/Models/Channel'),
+    MessageModel = require('./public/js/app/Models/Message');
+
+app.use(express.static(__dirname + '/public'));
+
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
 
 server.listen(8080);
 
-app.use(express.static(__dirname + '/public'));
-app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/index.html');
-});
+// log server started
+console.log("[SERVER][ON]")
 
-var usersRefArray = ['TH', 'CP', 'BC', 'TL', 'VB'];
-var users = {};
+var usersList = new UsersModel.Users();
+var channelsList = new ChannelsModel.Channels(usersList.users);
+var usersConnected = [];
 var history = 20;
-var Channels = new ChannelsModel.Channels(usersRefArray);
 
 io.sockets.on('connection', function (socket) {
 
-    var usr = false;
-    var channels = Channels.getChannels();
-    var channel = Channels.getChannel('G');
+    var usr;
+    var channels = channelsList.channels;
+    var channel = channelsList.getGeneralChannel();
 
-    socket.on('login', function(user) {
-        if(usersRefArray.includes(user.username)){
-            socket.emit('logged');
-            socket.emit('chanchange', channel.id);
+    socket.on('login', function (userPseudo) {
+        usr = usersList.users.find(user => user.pseudo == userPseudo)
+        if (usr) {
+            usersConnected.push(usr);
 
-            for(var k in users){
-                socket.emit('usrconnect', users[k]);
+            //log authen
+            console.log(`[Auth][Login] ${usr.fullname} => ${new Date(Date.now()).toLocaleString()}`);
+
+            // logged event 
+            socket.emit('logged', usersList.users, usr);
+
+            // switch to general channel
+            socket.emit('chanSwitch', channel);
+
+            // show current users login
+            for (var k in usersConnected) {
+                socket.emit('usrconnect', usersConnected[k]);
             }
 
-            for(var k in channels){
-                if(channels[k].messages.length > 0){
-                    for(var l in channels[k].messages){
-                        socket.emit('newmsg', channels[k].messages[l]);
+            //feed client with channel messages
+            for (var k in channels) {
+                if (channels[k].messages.length > 0) {
+                    for (var l in channels[k].messages) {
+                        var message = channels[k].messages[l]
+                        socket.emit('newmsg', message, channels[k]);
+                        if(message.target.id == usr.id || message.target == '') {
+                            channels[k].messages[l].isNew = false;
+                        }
                     }
                 }
             }
 
-            usr = user;
-            users[usr.username] = usr;
+            // alert user connexion to other users
             io.sockets.emit('usrconnect', usr);
-        }else{
+        } else {
             socket.emit('badlogin');
         }
-        
     });
 
-    socket.on('newmsg', function(message){
-        message.user = usr;
-        date = new Date();
-        message.h = date.getHours();
-        message.m = date.getMinutes();
-        message.d = date.getDate();
-        message.M = date.getMonth() + 1;
-        message.chan = channel.id;
-        message.new = true;
-        io.sockets.emit('newmsg', message);
-        for(var k in users){
-            if(users[k].username == message.target){
-                message.new = false;
-            }
-        }
+    socket.on('newmsg', function (messageData) {
+        // build messageObjet
+        target = messageData.target != '' ? usersList.users.find(user => user.id == messageData.target.replace('user_', '')) : '';
+        message = new MessageModel.Message(usr, target, messageData.message, moment().format("DD/MM/yyyy à HH:mm:ss"), Date.now());
+
+        // log message
+        console.log(`[Message][New] ${usr.fullname} -> ${message.target == '' ? 'commun' : message.target.fullname} => ${moment().format()}`);
+
+        // save messageObject
         channel.messages.push(message);
-        if(channel.messages.lenght > history){
+        if (channel.messages.lenght > history) {
             channel.messages.shift();
         }
-    })
 
-    socket.on('chanchange', function(chan){
-        if(chan.target == 'G'){
-            channel = Channels.getChannel(chan.target);
-        } else {
-            var setChannel = ChannelsModel.ChannelName(chan.user, chan.target);
-            channel = Channels.getChannel(setChannel);
-        }
-        socket.emit('chanchange', channel.id)
-        for(var k in channel.messages){
-            channel.messages[k].new = false;
-            socket.emit('newmsg', channel.messages[k]);
+        // broadcast it
+        io.sockets.emit('newmsg', message, channel);
+
+        // check if target is login
+        for (var k in usersConnected) {
+            if (usersConnected[k] == message.target || message.target == '') {
+                message.isNew = false;
+            }
         }
     })
 
-    socket.on('disconnect', function(){
-        if(!usr){
+    socket.on('chanSwitch', function (targetUserId) {
+        channel = channelsList.getChannelByUsers(usr, usersList.getUser(targetUserId));
+        socket.emit('chanSwitch', channel)
+
+        // send message of this channel
+        for (var k in channel.messages) {
+            // isNewMessage to false if isUserTarget
+            if (channel.messages[k].target == '' || channel.messages[k].target.id == usr.id) {
+                channel.messages[k].isNew = false;
+            }
+            socket.emit('newmsg', channel.messages[k], channel);
+        }
+    })
+
+    socket.on('deleteMessage', function(messageTimestemp) {
+        message = channel.messages.find(message => message.timestemp == messageTimestemp);
+        if (message) {
+            console.log(`[Message][Delete] ${usr.fullname} -> ${channel.users.length == 2 ? (channel.users[0] == channel.users[1] ? usr.fullname : channel.users.find(user => user.id != usr.id).fullname) : 'commun'} => ${moment().format()}`);
+            io.sockets.emit('deleteMessage', message.timestemp);
+            channel.messages.splice(channel.messages.indexOf(message), 1);
+        }
+    })
+
+    socket.on('disconnect', function () {
+        if (!usr) {
             return false;
         }
-        delete users[usr.username];
+        console.log(`[Auth][Logout] ${usr.fullname} => ${moment().format()}`);
+        usersConnected.splice(usersConnected.indexOf(usr), 1);
         io.sockets.emit('disusr', usr);
     })
 });

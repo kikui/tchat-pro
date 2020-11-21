@@ -7,17 +7,13 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Oswald&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.ico">
 </head>
 
 <body>
     <div id="user">
-        <div id="useritem">
-            <div id="TH" class="usercard"><strong>TH</strong></div>
-            <div id="CP" class="usercard"><strong>CP</strong></div>
-            <div id="BC" class="usercard"><strong>BC</strong></div>
-            <div id="TL" class="usercard"><strong>TL</strong></div>
-            <div id="VB" class="usercard"><strong>VB</strong></div>
-        </div>
+        <div id='wellcome'></div>
+        <div id="useritem"></div>
     </div>
 
     <div class="right-screen">
@@ -29,7 +25,6 @@
             <p id="badlogin">utilisateur incorrecte !</p>
         </form>
 
-        <div id=band></div>
         <div id="messages"></div>
 
         <form action="javascript:void(0);" id="form">
@@ -41,10 +36,12 @@
         </form>
     </div>  
 
+    <audio autoplay="true" id="beep" src="/sound/messenger_sound.mp3"></audio>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/client.js"></script>
-    <script src="/js/client2.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="/js/app/controllers/client.js"></script>
+    <script src="/js/app/controllers/clientConnexion.js"></script>
 </body>
 
 </html>

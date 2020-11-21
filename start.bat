@@ -1,6 +1,5 @@
 @echo off
 cls
-cd C:\tchat-pro-master
-echo lancement du serveur Tchat pro
+cd C:\Users\kikui\OneDrive - Ynov\projets\groupeMedical-chat
 node server.js
 pause
