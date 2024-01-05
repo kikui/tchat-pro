@@ -42,6 +42,7 @@ function buildUsersView(users, currentUser) {
 	var userHTML = []
 	userHTML.push(`<div id='user_' class="usercard"><strong>Tout le monde</strong></div>`);
 	users.forEach((user) => {
+		if (user.id == currentUser.id) return;
 		userHTML.push(`<div id='user_${user.id}' class="usercard"><strong>${user.fullname}</strong></div>`);
 	})
 	$('#useritem').append(userHTML);

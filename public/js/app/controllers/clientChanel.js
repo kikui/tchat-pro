@@ -114,15 +114,18 @@ function sendNotification(usrId, channelId, message, channelData, audioElement) 
 }
 
 function displayMessage(usrId, message) {
-  if (message.from.id == usrId) {
-	  $('#messages').append('<div class="message-right" id="' + message.timestemp + '"><div class="info-right"><span><strong>' + message.from.fullname
-		  + '</strong></span><p class="date">' + message.date + '</p><p class="msg">' +
-		  message.message + '</p><span class="delete-message" idByTimestemp="' + message.timestemp + '"><i class="fas fa-trash"></i></span></div></div>');
-  } else {
-	  $('#messages').append('<div class="message-left" id="' + message.timestemp + '"><div class="info-left"><span><strong>' + message.from.fullname
-		  + '</strong></span><p class="date">' + message.date + '</p><p class="msg">' +
-		  message.message + '</p><span class="delete-message" idByTimestemp="' + message.timestemp + '"><i class="fas fa-trash"></i></span></div></div>');
-  }
+	let isOwnerMessage = message.from.id == usrId
+	let html = `<div class="message-${isOwnerMessage ? "right" : "left"}" id="${message.timestemp}">
+		<div class="info-${isOwnerMessage ? "right" : "left"}">
+			<span><strong>${message.from.fullname}</strong></span>
+			<p class="date">${message.date}</p>
+			<p class="msg">${message.message}</p>
+			<div class="delete-message" style="justify-content: ${isOwnerMessage ? "start" : "end"}" idByTimestemp="${message.timestemp}">
+				<i class="fas fa-trash"></i>
+			</div>
+		</div>
+	</div>`
+	$('#messages').append(html);
   $('#messages').animate({ scrollTop: $('#messages').prop('scrollHeight') }, 50);
 }
 
@@ -130,7 +133,7 @@ function displayMessage(usrId, message) {
 
 function resetDeleteMessageListener(socket) {
   $('.delete-message').off();
-	$('.delete-message').each((index, e) => {s
+	$('.delete-message').each((index, e) => {
 		$(e).on('click', function() {
 			socket.emit('deleteMessage', $(this).attr('idByTimestemp'));
 		})

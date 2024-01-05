@@ -113,6 +113,7 @@ p{
 }
 
 .delete-message {
+    display: flex;
     svg {
         color: rgba(255, 31, 31, 0.555);
         margin: 5px;
