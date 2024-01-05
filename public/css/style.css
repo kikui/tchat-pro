@@ -113,14 +113,15 @@ p{
 }
 
 .delete-message {
-    color: rgba(255, 31, 31, 0.555);
-    margin: 5px;
-    height: 24px;
-    width: 24px;
-}
-
-.icon-delete:hover {
-    cursor: pointer;
+    svg {
+        color: rgba(255, 31, 31, 0.555);
+        margin: 5px;
+        height: 24px;
+        width: 24px;
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 #form {
